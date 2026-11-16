@@ -48,5 +48,30 @@ export const formations = {
       { id: "RM", position: "RM", top: "35%", left: "85%" },
       { id: "ST", position: "ST", top: "10%", left: "50%" }
     ]
+  },
+  "4-4-2": {
+    name: "4-4-2",
+    strengths: [
+      "Two strikers occupy both centre-backs",
+      "Two compact banks of four are hard to break down",
+      "Natural width from the wide midfielders"
+    ],
+    weaknesses: [
+      "Outnumbered in central midfield against a three",
+      "Strikers must hold the ball up or it comes straight back"
+    ],
+    slots: [
+      { id: "GK", position: "GK", top: "90%", left: "50%" },
+      { id: "LB", position: "LB", top: "70%", left: "15%" },
+      { id: "CB1", position: "CB", top: "75%", left: "35%" },
+      { id: "CB2", position: "CB", top: "75%", left: "65%" },
+      { id: "RB", position: "RB", top: "70%", left: "85%" },
+      { id: "LM", position: "LM", top: "45%", left: "14%" },
+      { id: "CM1", position: "CM", top: "50%", left: "38%" },
+      { id: "CM2", position: "CM", top: "50%", left: "62%" },
+      { id: "RM", position: "RM", top: "45%", left: "86%" },
+      { id: "ST1", position: "ST", top: "18%", left: "40%" },
+      { id: "ST2", position: "ST", top: "18%", left: "60%" }
+    ]
   }
 };
