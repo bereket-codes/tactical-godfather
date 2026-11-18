@@ -4,7 +4,7 @@ import {
   PointerSensor, KeyboardSensor, pointerWithin, rectIntersection,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { restrictToWindowEdges } from '@dnd-kit/modifiers';
+import { restrictToWindowEdges, snapCenterToCursor } from '@dnd-kit/modifiers';
 import { motion, AnimatePresence } from 'framer-motion';
 import './index.css';
 import PlayerCard from './components/PlayerCard';
@@ -13,6 +13,7 @@ import { formations } from './data/formations';
 import playersData from './data/players.json';
 import { generateSirAlexReport } from './engine/godfather';
 import { buildBestXI, describeSquad } from './engine/lineup';
+import { getPositionFit } from './engine/positionFit';
 
 const RETURN_ANIM = { duration: 220, easing: 'cubic-bezier(0.2, 0, 0, 1)' };
 
@@ -171,6 +172,7 @@ export default function App() {
   const [squad, setSquad] = useState({});
   const [report, setReport] = useState(null);
   const [active, setActive] = useState(null); // { player, fromSlot }
+  const [dragFit, setDragFit] = useState(null); // live fit of the slot under the dragged player
   const [dropAnim, setDropAnim] = useState(RETURN_ANIM);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [instructions, setInstructions] = useState({});
@@ -196,13 +198,25 @@ export default function App() {
   const handleDragStart = ({ active: dragged }) => {
     const { player, fromSlot } = dragged.data.current;
     setActive({ player, fromSlot });
+    setDragFit(null);
     setPickedPlayer(null);
     setThreat(null);
+  };
+
+  // Light up the token with the fit of whichever slot is under it.
+  const handleDragOver = ({ active: dragged, over }) => {
+    const slot = over && slots.find((s) => s.id === over.id);
+    if (!slot || !dragged.data.current) {
+      setDragFit(null);
+      return;
+    }
+    setDragFit(getPositionFit(dragged.data.current.player, slot.position));
   };
 
   const handleDragEnd = ({ active: dragged, over }) => {
     const { player, fromSlot } = dragged.data.current;
     setActive(null);
+    setDragFit(null);
     // Landed somewhere valid: no fly-back, the spring pop in the slot is the animation.
     // Missed everything: glide back to where it came from.
     setDropAnim(over ? null : RETURN_ANIM);
@@ -229,7 +243,7 @@ export default function App() {
     });
   };
 
-  const handleDragCancel = () => { setActive(null); setDropAnim(RETURN_ANIM); };
+  const handleDragCancel = () => { setActive(null); setDragFit(null); setDropAnim(RETURN_ANIM); };
 
   const handleTacticChange = (e) => {
     const { name, value } = e.target;
@@ -346,9 +360,10 @@ export default function App() {
       sensors={sensors}
       collisionDetection={collision}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
-      modifiers={[restrictToWindowEdges]}
+      modifiers={[restrictToWindowEdges, snapCenterToCursor]}
     >
       <div className="app-layout">
         <Bench players={benchPlayers} pickedPlayer={pickedPlayer} onPick={handlePick} />
@@ -533,20 +548,9 @@ export default function App() {
 
       <DragOverlay dropAnimation={dropAnim} adjustScale={false}>
         {active ? (
-          active.fromSlot ? (
-            <div className="overlay-token">
-              <PlayerToken player={active.player} />
-            </div>
-          ) : (
-            <div className="overlay-chip">
-              <span className="overlay-rating">{active.player.rating}</span>
-              <span className="overlay-info">
-                <b>{active.player.name}</b>
-                <em>{active.player.position} · {active.player.club}</em>
-              </span>
-              <span className="overlay-hint">drop on a slot</span>
-            </div>
-          )
+          <div className="overlay-token">
+            <PlayerToken player={active.player} fit={dragFit} />
+          </div>
         ) : null}
       </DragOverlay>
     </DndContext>

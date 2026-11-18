@@ -19,6 +19,15 @@ const ARROWS = {
 
 const DASHED = ['run_in_behind', 'cut_inside', 'invert'];
 
+const SUFFIX = /^(jr|jnr|junior|snr|sr)\.?$/i;
+
+// "Vinícius Jr" -> "Vinícius", "Marc-André ter Stegen" -> "Stegen"
+function shortName(name) {
+  const parts = name.trim().split(' ');
+  const last = parts[parts.length - 1];
+  return parts.length > 1 && SUFFIX.test(last) ? parts[parts.length - 2] : last;
+}
+
 export function PlayerToken({ player, fit }) {
   return (
     <div
@@ -26,7 +35,7 @@ export function PlayerToken({ player, fit }) {
       title={`${player.name} · ${player.position} · ${player.rating}`}
     >
       <span className="token-rating">{player.rating}</span>
-      <span className="token-name">{player.name.split(' ').pop()}</span>
+      <span className="token-name">{shortName(player.name)}</span>
     </div>
   );
 }
@@ -154,7 +163,7 @@ function ThreatOverlay({ threat, onClose }) {
             strokeLinecap="round"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ duration: 2.1, ease: 'easeInOut' }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
           />
           <circle cx={from.x} cy={from.y} r="1.3" fill="rgba(244, 241, 232, 0.5)" />
           <motion.circle
@@ -168,8 +177,8 @@ function ThreatOverlay({ threat, onClose }) {
             animate={{ opacity: 1, x: offsets.map((p) => p.x), y: offsets.map((p) => p.y) }}
             transition={{
               opacity: { duration: 0.2 },
-              x: { duration: 2.1, ease: 'easeInOut' },
-              y: { duration: 2.1, ease: 'easeInOut' },
+              x: { duration: 2, ease: 'easeInOut' },
+              y: { duration: 2, ease: 'easeInOut' },
             }}
           />
           <motion.circle
@@ -180,7 +189,7 @@ function ThreatOverlay({ threat, onClose }) {
             strokeWidth="0.6"
             initial={{ r: 1.5, opacity: 0 }}
             animate={{ r: [1.5, 8], opacity: [0.85, 0] }}
-            transition={{ duration: 1.4, delay: 2, repeat: Infinity, repeatDelay: 0.4 }}
+            transition={{ duration: 0.9, delay: 2, repeat: 2, repeatDelay: 0.15 }}
           />
           <motion.circle
             cx={to.x}
@@ -189,7 +198,7 @@ function ThreatOverlay({ threat, onClose }) {
             fill="var(--bad)"
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 0.4] }}
-            transition={{ duration: 1.4, delay: 2 }}
+            transition={{ duration: 0.9, delay: 2 }}
           />
         </g>
       </svg>
