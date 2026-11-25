@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Tactical Godfather
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React 19 squad builder. Pick a formation, drag or click 17 players into it, shape the tactics, and let Sir Alex rate the setup and name the weakest link.
 
-## Available Scripts
+[![Tactical Godfather](https://bereket-codes.github.io/TacticalGodfather.jpg)](https://bereket-codes.github.io/tactical-godfather/)
 
-In the project directory, you can run:
+**Live:** https://bereket-codes.github.io/tactical-godfather/
 
-### `npm start`
+## What it does
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Formations** — 4-3-3, 4-2-3-1 and 4-4-2, each with its own slot map.
+- **Drag and drop** — drag a player card onto a slot, or click a player and then click where he should play (keyboard-friendly path).
+- **Position fit** — the engine classifies every player against the slot as *natural*, *adapted* or *out of position*, derived from the formation rather than hardcoded per slot.
+- **Best XI** — fills the lineup automatically so you have a sane starting point.
+- **Tactics** — tempo, defensive line and pressing sliders feed into the verdict.
+- **The Godfather** — a rule-based advisor reads the lineup and returns a rating plus written verdict.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech
 
-### `npm test`
+React 19 · `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/modifiers` · Framer Motion · Create React App · deployed to GitHub Pages by a GitHub Actions workflow on every push to `main`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## How to run
 
-### `npm run build`
+```bash
+git clone https://github.com/bereket-codes/tactical-godfather.git
+cd tactical-godfather
+npm install
+npm start          # http://localhost:3000
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm run build      # production build in /build
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub Pages.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Structure
 
-### `npm run eject`
+```
+src/
+  App.js                 board, drag context, tactics, verdict panel
+  components/Pitch.js    the pitch and its slots
+  components/PlayerCard.js
+  data/formations.js     slot maps per formation
+  data/players.json      the 17-player squad
+  engine/positionFit.js  natural / adapted / out-of-position
+  engine/lineup.js       lineup helpers
+  engine/godfather.js    rules, verdict and advice
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Roadmap
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Convert to TypeScript.
+- Add tests around the position-fit and verdict rules.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## License
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT — see [LICENSE](LICENSE).
